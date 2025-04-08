@@ -1,6 +1,8 @@
 package com.example.todo;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -18,10 +20,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.todo.databinding.ActivityMainBinding;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     ToDoViewModel toDoViewModel;
+    Repozytorium repozytorium;
     private BazaDanychToDo bazaDanychToDo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +42,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         toDoViewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
-        RoomDatabase.Callback callback = new RoomDatabase.Callback() {
-            @Override
-            public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                super.onCreate(db);
-            }
-
-            @Override
-            public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                super.onOpen(db);
-            }
-        };
-        bazaDanychToDo = Room.databaseBuilder(getApplicationContext(),BazaDanychToDo.class,"todoDataBase").addCallback(callback).build();
-        bazaDanychToDo.projektDao().insert(new Projekt("Todo", "Zrobic todo"));
+        Projekt projekt = new Projekt("zad 1", "opis 1");
+        repozytorium = Repozytorium.getInstance(this);
+        repozytorium.insertProjekt(projekt);
     }
 }
