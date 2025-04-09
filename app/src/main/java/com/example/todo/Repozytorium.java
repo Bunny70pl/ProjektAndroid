@@ -13,6 +13,7 @@ public class Repozytorium {
     private ProjektDao projektDao;
     private KategoriaDao kategoriaDao;
     private ZadanieDao zadanieDao;
+    private KomentarzDao komentarzDao;
     private ExecutorService executor;
 
     // Singleton Bazy Danych
@@ -23,6 +24,7 @@ public class Repozytorium {
         projektDao = db.projektDao();
         kategoriaDao = db.kategoriaDao();
         zadanieDao = db.zadanieDao();
+        komentarzDao = db.komentarzDao();
         executor = Executors.newSingleThreadExecutor();
     }
 
@@ -33,7 +35,6 @@ public class Repozytorium {
         return instance;
     }
 
-    // Operacje na projektach
     public void insertProjekt(Projekt projekt) {
         executor.execute(() -> projektDao.insert(projekt));
     }
@@ -42,7 +43,6 @@ public class Repozytorium {
         return projektDao.pobierzWszystkieProjekty();
     }
 
-    // Operacje na kategoriach
     public void insertKategoria(Kategoria kategoria) {
         executor.execute(() -> kategoriaDao.insert(kategoria));
     }
@@ -51,12 +51,19 @@ public class Repozytorium {
         return kategoriaDao.pobierzKategoriePoId(projektId);
     }
 
-    // Operacje na zadaniach
     public void insertZadanie(Zadanie zadanie) {
         executor.execute(() -> zadanieDao.insert(zadanie));
     }
 
     public LiveData<List<Zadanie>> pobierzZadaniaDlaKategorii(int kategoriaId) {
         return zadanieDao.pobierzZadaniaDlaKategorii(kategoriaId);
+    }
+
+    public void insertKomentarz(Komentarz komentarz) {
+        executor.execute(() -> komentarzDao.insert(komentarz));
+    }
+
+    public LiveData<List<Komentarz>> pobierzKomentarzeDlaZadania(int zadanieId) {
+        return komentarzDao.pobierzKomentarzPoIdZadania(zadanieId);
     }
 }

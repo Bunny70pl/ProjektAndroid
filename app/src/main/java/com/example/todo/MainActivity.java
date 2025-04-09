@@ -1,34 +1,26 @@
 package com.example.todo;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.databinding.ActivityMainBinding;
-
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-    ToDoViewModel toDoViewModel;
-    Repozytorium repozytorium;
-    private BazaDanychToDo bazaDanychToDo;
+    ProjektViewModel projektViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +33,40 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        toDoViewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
-        Projekt projekt = new Projekt("zad 1", "opis 1");
-        repozytorium = Repozytorium.getInstance(this);
-        repozytorium.insertProjekt(projekt);
+        projektViewModel = new ViewModelProvider(this).get(ProjektViewModel.class);
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewProjekty);
+        ProjektAdapter adapter = new ProjektAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        projektViewModel.getWszystkieProjekty().observe(this, projekty -> {
+            adapter.setProjekty(projekty);
+        });
+        FloatingActionButton fab = binding.dodajProjekt;
+        fab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pokazDialogDodawaniaProjektu();
+                    }
+                }
+        );
+    }
+    private void pokazDialogDodawaniaProjektu() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dodaj_projekt, null);
+        EditText editNazwa = dialogView.findViewById(R.id.editNazwaProjektu);
+        EditText editOpis = dialogView.findViewById(R.id.editOpisProjektu);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Nowy projekt")
+                .setView(dialogView)
+                .setPositiveButton("Dodaj", (dialog, which) -> {
+                    String nazwa = editNazwa.getText().toString();
+                    String opis = editOpis.getText().toString();
+                    if (!nazwa.isEmpty()) {
+                        projektViewModel.dodajProjekt(new Projekt(nazwa, opis));
+                    }
+                })
+                .setNegativeButton("Anuluj", null)
+                .show();
     }
 }
