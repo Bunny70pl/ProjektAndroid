@@ -32,6 +32,12 @@ public class ProjektAdapter extends RecyclerView.Adapter<ProjektAdapter.ProjektV
         Projekt projekt = projekty.get(position);
         holder.nazwa.setText(projekt.getNazwa());
         holder.opis.setText(projekt.getOpis());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onProjektClick(projekt);
+            }
+        });
     }
 
     @Override
@@ -47,5 +53,13 @@ public class ProjektAdapter extends RecyclerView.Adapter<ProjektAdapter.ProjektV
             nazwa = itemView.findViewById(R.id.textNazwaProjektu);
             opis = itemView.findViewById(R.id.textOpisProjektu);
         }
+    }
+    public interface OnProjektClickListener {
+        void onProjektClick(Projekt projekt);
+    }
+    private OnProjektClickListener listener;
+
+    public void setOnProjektClickListener(OnProjektClickListener listener) {
+        this.listener = listener;
     }
 }

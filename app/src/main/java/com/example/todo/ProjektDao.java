@@ -22,4 +22,6 @@ public interface ProjektDao {
 
     @Query("SELECT * FROM projekty")
     LiveData<List<Projekt>> pobierzWszystkieProjekty();
+    @Query("SELECT * FROM projekty WHERE id = :id")
+    LiveData<Projekt> pobierzProjektPoId(int id);
 }
