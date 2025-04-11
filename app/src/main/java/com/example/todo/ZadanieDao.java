@@ -20,4 +20,8 @@ public interface ZadanieDao {
 
     @Query("SELECT * FROM zadania WHERE idKategorii = :kategoriaId")
     LiveData<List<Zadanie>> pobierzZadaniaDlaKategorii(int kategoriaId);
+
+    @Query("SELECT * FROM zadania WHERE id = :id")
+    Zadanie pobierzZadaniePoId(int id);
+
 }

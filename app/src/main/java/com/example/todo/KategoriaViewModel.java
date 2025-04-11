@@ -49,4 +49,9 @@ public class KategoriaViewModel extends AndroidViewModel {
     public void usunProjekt(Projekt projekt) {
         repozytorium.deleteProjekt(projekt);
     }
+
+    public void przeniesZadanieDoKategorii(int zadanieId, int nowaKategoriaId) {
+        repozytorium.zmienKategorieZadania(zadanieId, nowaKategoriaId);
+        pobierzZadania(nowaKategoriaId);
+    }
 }

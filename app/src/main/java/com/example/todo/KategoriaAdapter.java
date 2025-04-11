@@ -1,6 +1,9 @@
 package com.example.todo;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +24,6 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
     private final Context context;
     private final LifecycleOwner lifecycleOwner;
     private final ViewModelStoreOwner viewModelStoreOwner;
-    ZadanieAdapterPodKategorie zadanieAdapterPodKategorie = new ZadanieAdapterPodKategorie();
     KategoriaViewModel kategoriaViewModel;
 
     public KategoriaAdapter(Context context, LifecycleOwner lifecycleOwner, ViewModelStoreOwner viewModelStoreOwner) {
@@ -45,16 +47,32 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
     @Override
     public void onBindViewHolder(@NonNull KategoriaAdapter.KategoriaViewHolder holder, int position) {
         Kategoria kategoria = kategorie.get(position);
+        KategoriaViewModel viewModel = new ViewModelProvider(viewModelStoreOwner).get(KategoriaViewModel.class);
         holder.nazwa.setText(kategoria.getNazwaKategorii());
-        holder.recyclerView.setAdapter(zadanieAdapterPodKategorie);
+        ZadanieAdapterPodKategorie adapter = new ZadanieAdapterPodKategorie();
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        kategoriaViewModel = new ViewModelProvider(viewModelStoreOwner).get(KategoriaViewModel.class);
-        for (int i =0;i<kategorie.size();i++){
-            kategoria = kategorie.get(i);
-            kategoriaViewModel.pobierzZadania(kategoria.getId());
-        }
-        kategoriaViewModel.getZadaniaDlaKategorii().observe(lifecycleOwner, zadanie -> {
-            zadanieAdapterPodKategorie.setZadania(zadanie);
+        holder.recyclerView.setAdapter(adapter);
+        holder.itemView.setOnDragListener((v, event) -> {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
+                case DragEvent.ACTION_DROP:
+                    ClipData.Item item = event.getClipData().getItemAt(0);
+                    int zadanieId = Integer.parseInt(item.getText().toString());
+                    int nowaKategoriaId = kategoria.getId();
+                    viewModel.przeniesZadanieDoKategorii(zadanieId, nowaKategoriaId);
+                    return true;
+                default:
+                    return true;
+            }
+        });
+        viewModel.pobierzZadania(kategoria.getId());
+        viewModel.getZadaniaDlaKategorii().observe(lifecycleOwner, zadania -> {
+            if (zadania.size() > 0 && zadania.get(0).getIdKategorii() == kategoria.getId()) {
+                adapter.setZadania(zadania);
+            }else{
+                adapter.setZadania(zadania);
+            }
         });
     }
 

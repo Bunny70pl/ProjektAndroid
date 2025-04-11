@@ -59,6 +59,14 @@ public class KategorieActivity extends AppCompatActivity {
                     pokazDialogDodawniaKategorii();
                 }
                 );
+        usunProjekt.setOnClickListener(v->{
+                    usunProjekt();
+                }
+        );
+        edytujProjekt.setOnClickListener(v->{
+                    pokazDialogEdytowaniaProjektu();
+                }
+        );
     }
     private void pokazDialogDodawniaKategorii() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dodaj_kategorie, null);
@@ -71,6 +79,29 @@ public class KategorieActivity extends AppCompatActivity {
                     String nazwa = editNazwa.getText().toString();
                     if (!nazwa.isEmpty()) {
                         kategoriaViewModel.dodajKategroia(new Kategoria(nazwa, projektId));
+                    }
+                })
+                .setNegativeButton("Anuluj", null)
+                .show();
+    }
+    private void usunProjekt() {
+        kategoriaViewModel.usunProjekt(kategoriaViewModel.getProjekt().getValue());
+    }
+    private void pokazDialogEdytowaniaProjektu() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edyt_projekt, null);
+        EditText editNazwa = dialogView.findViewById(R.id.editNazwaProjektu);
+        EditText editOpis = dialogView.findViewById(R.id.editOpisProjektu);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Nowy kategoria")
+                .setView(dialogView)
+                .setPositiveButton("Dodaj", (dialog, which) -> {
+                    String nazwa = editNazwa.getText().toString();
+                    if (!nazwa.isEmpty()) {
+                        Projekt projekt = kategoriaViewModel.getProjekt().getValue();
+                        projekt.setNazwa(editNazwa.getText().toString());
+                        projekt.setOpis(editOpis.getText().toString());
+                        kategoriaViewModel.edytujProjekt(projekt);
                     }
                 })
                 .setNegativeButton("Anuluj", null)

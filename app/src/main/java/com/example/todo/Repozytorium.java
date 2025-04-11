@@ -66,6 +66,15 @@ public class Repozytorium {
     public void insertZadanie(Zadanie zadanie) {
         executor.execute(() -> zadanieDao.insert(zadanie));
     }
+    public void zmienKategorieZadania(int zadanieId, int nowaKategoriaId) {
+        executor.execute(() -> {
+            Zadanie zadanie = zadanieDao.pobierzZadaniePoId(zadanieId);
+            if (zadanie != null) {
+                zadanie.setIdKategorii(nowaKategoriaId);
+                zadanieDao.update(zadanie);
+            }
+        });
+    }
 
 
     public LiveData<List<Zadanie>> pobierzZadaniaDlaKategorii(int kategoriaId) {

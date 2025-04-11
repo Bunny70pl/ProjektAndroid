@@ -1,5 +1,7 @@
 package com.example.todo;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,13 @@ public class ZadanieAdapterPodKategorie extends RecyclerView.Adapter<ZadanieAdap
     public void onBindViewHolder(@NonNull ZadaniaViewHolder holder, int position) {
         Zadanie zadanie = zadania.get(position);
         holder.nazwa.setText(zadanie.getTytul());
+        holder.itemView.setOnLongClickListener(v -> {
+            ClipData.Item item = new ClipData.Item(String.valueOf(zadanie.getId()));
+            ClipData dragData = new ClipData("ZADANIE_ID", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+            v.startDragAndDrop(dragData, shadowBuilder, null, 0);
+            return true;
+        });
     }
 
     @Override
