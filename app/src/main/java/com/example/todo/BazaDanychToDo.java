@@ -19,7 +19,7 @@ public abstract class BazaDanychToDo extends RoomDatabase {
             synchronized (BazaDanychToDo.class) {
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.getApplicationContext(),
-                                    BazaDanychToDo.class, "bazaDanychTrello")
+                                    BazaDanychToDo.class, "bazaDanychTrelloToDo")
                             .fallbackToDestructiveMigration()
                             .build();
                 }

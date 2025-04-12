@@ -14,6 +14,7 @@ public class KategoriaViewModel extends AndroidViewModel {
     private LiveData<List<Kategoria>> kategorie;
     private LiveData<List<Zadanie>> zadania;
     private LiveData<Projekt> projektLiveData;
+    private LiveData<Kategoria> kategoriaLiveData;
 
     public KategoriaViewModel(@NonNull Application application) {
         super(application);
@@ -22,6 +23,9 @@ public class KategoriaViewModel extends AndroidViewModel {
 
     public void pobierzKategorie(int id){
         kategorie = repozytorium.pobierzKategoriePoIdProjektu(id);
+    }
+    public void pobierzKategoria(int id){
+        kategoriaLiveData = repozytorium.pobierzKategoriaPoId(id);
     }
     public void pobierzZadania(int id){
         zadania = repozytorium.pobierzZadaniaDlaKategorii(id);
@@ -39,6 +43,9 @@ public class KategoriaViewModel extends AndroidViewModel {
     public LiveData<Projekt> getProjekt() {
         return projektLiveData;
     }
+    public LiveData<Kategoria> getKategoria() {
+        return kategoriaLiveData;
+    }
 
     public void dodajKategroia(Kategoria kategoria) {
         repozytorium.insertKategoria(kategoria);
@@ -48,6 +55,17 @@ public class KategoriaViewModel extends AndroidViewModel {
     }
     public void usunProjekt(Projekt projekt) {
         repozytorium.deleteProjekt(projekt);
+    }
+
+    public void dodajZadanie(Zadanie zadanie) {
+        repozytorium.insertZadanie(zadanie);
+        pobierzZadania(zadanie.getIdKategorii());
+    }
+    public void edytujKategorie(Kategoria kategoria) {
+        repozytorium.edytujKategorie(kategoria);
+    }
+    public void usunKategorie(Kategoria kategoria) {
+        repozytorium.usunKategorie(kategoria);
     }
 
     public void przeniesZadanieDoKategorii(int zadanieId, int nowaKategoriaId) {

@@ -21,4 +21,6 @@ public interface KategoriaDao {
 
     @Query("SELECT * FROM kategorie WHERE idProjektu = :projektId")
     LiveData<List<Kategoria>> pobierzKategoriePoId(int projektId);
+    @Query("SELECT * FROM kategorie WHERE id = :id")
+    LiveData<Kategoria> pobierzKategoriaPoId(int id);
 }

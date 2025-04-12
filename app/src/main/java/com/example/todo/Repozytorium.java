@@ -53,15 +53,24 @@ public class Repozytorium {
     public LiveData<Projekt> pobierzProjektPoId(int id) {
         return projektDao.pobierzProjektPoId(id);
     }
+    public LiveData<Kategoria> pobierzKategoriaPoId(int id) {
+        return kategoriaDao.pobierzKategoriaPoId(id);
+    }
 
     public void insertKategoria(Kategoria kategoria) {
         executor.execute(() -> kategoriaDao.insert(kategoria));
     }
 
+    public void edytujKategorie(Kategoria kategoria) {
+        executor.execute(() -> kategoriaDao.update(kategoria));
+    }
+    public void usunKategorie(Kategoria kategoria) {
+        executor.execute(() -> kategoriaDao.delete(kategoria));
+    }
+
     public LiveData<List<Kategoria>> pobierzKategoriePoIdProjektu(int projektId) {
         return kategoriaDao.pobierzKategoriePoId(projektId);
     }
-
 
     public void insertZadanie(Zadanie zadanie) {
         executor.execute(() -> zadanieDao.insert(zadanie));

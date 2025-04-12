@@ -20,7 +20,6 @@
     import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
     public class MainActivity extends AppCompatActivity {
-        private Repozytorium repozytorium;
         private ActivityMainBinding binding;
         private ProjektViewModel projektViewModel;
         @Override

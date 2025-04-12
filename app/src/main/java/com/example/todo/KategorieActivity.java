@@ -1,6 +1,7 @@
 package com.example.todo;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,11 @@ public class KategorieActivity extends AppCompatActivity {
                     pokazDialogEdytowaniaProjektu();
                 }
         );
+        adapter.setOnKategoriaClickListener(kategoria -> {
+            Intent intent = new Intent(KategorieActivity.this, ListaZadanWKateogriiActivity.class);
+            intent.putExtra("kategoriaId", kategoria.getId());
+            startActivity(intent);
+        });
     }
     private void pokazDialogDodawniaKategorii() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dodaj_kategorie, null);
@@ -89,16 +95,17 @@ public class KategorieActivity extends AppCompatActivity {
     }
     private void pokazDialogEdytowaniaProjektu() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edyt_projekt, null);
+        Projekt projekt = kategoriaViewModel.getProjekt().getValue();
         EditText editNazwa = dialogView.findViewById(R.id.editNazwaProjektu);
         EditText editOpis = dialogView.findViewById(R.id.editOpisProjektu);
-
+        editNazwa.setText(projekt.getNazwa());
+        editOpis.setText(projekt.getOpis());
         new AlertDialog.Builder(this)
-                .setTitle("Nowy kategoria")
+                .setTitle("Edytuj projekt")
                 .setView(dialogView)
                 .setPositiveButton("Dodaj", (dialog, which) -> {
                     String nazwa = editNazwa.getText().toString();
                     if (!nazwa.isEmpty()) {
-                        Projekt projekt = kategoriaViewModel.getProjekt().getValue();
                         projekt.setNazwa(editNazwa.getText().toString());
                         projekt.setOpis(editOpis.getText().toString());
                         kategoriaViewModel.edytujProjekt(projekt);

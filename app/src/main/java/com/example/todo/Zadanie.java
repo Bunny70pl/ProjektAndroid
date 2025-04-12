@@ -18,15 +18,15 @@ public class Zadanie {
 
     public String opisZadania;
 
-    public boolean status;
-
     public int idKategorii;
 
-    public Zadanie( String tytul, String opisZadania, boolean status, int idKategorii) {
+    public Zadanie( String tytul, String opisZadania, int idKategorii) {
         this.tytul = tytul;
         this.opisZadania = opisZadania;
-        this.status = status;
         this.idKategorii = idKategorii;
+    }
+
+    public Zadanie() {
     }
 
     public int getId() {
@@ -51,14 +51,6 @@ public class Zadanie {
 
     public void setOpisZadania(String opisZadania) {
         this.opisZadania = opisZadania;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public int getIdKategorii() {

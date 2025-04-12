@@ -3,6 +3,7 @@ package com.example.todo;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.Intent;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,11 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
                     return true;
             }
         });
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onKategoriaClick(kategoria);
+            }
+        });
         viewModel.pobierzZadania(kategoria.getId());
         viewModel.getZadaniaDlaKategorii().observe(lifecycleOwner, zadania -> {
             if (zadania.size() > 0 && zadania.get(0).getIdKategorii() == kategoria.getId()) {
@@ -91,6 +97,14 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
             nazwa = itemView.findViewById(R.id.textNazwaKategorii);
             recyclerView = itemView.findViewById(R.id.recyclerViewZadaniaPodKategoria);
         }
+    }
+    public interface OnKategoriaClickListener {
+        void onKategoriaClick(Kategoria kategoria);
+    }
+    private KategoriaAdapter.OnKategoriaClickListener listener;
+
+    public void setOnKategoriaClickListener(KategoriaAdapter.OnKategoriaClickListener listener) {
+        this.listener = listener;
     }
 }
 
