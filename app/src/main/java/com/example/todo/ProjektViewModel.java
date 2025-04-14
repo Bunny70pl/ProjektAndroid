@@ -5,8 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
-import java.text.Annotation;
 import java.util.List;
 
 public class ProjektViewModel extends AndroidViewModel {

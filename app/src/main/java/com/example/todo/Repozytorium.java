@@ -1,6 +1,7 @@
 package com.example.todo;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -16,7 +17,6 @@ public class Repozytorium {
     private KomentarzDao komentarzDao;
     private ExecutorService executor;
 
-    // Singleton Bazy Danych
     private static Repozytorium instance;
 
     private Repozytorium(Context context) {
@@ -73,25 +73,43 @@ public class Repozytorium {
     }
 
     public void insertZadanie(Zadanie zadanie) {
-        executor.execute(() -> zadanieDao.insert(zadanie));
+        Log.d("Repozytorium", "Zadanie przed zapisaniem: " + zadanie.getTytul());
+        executor.execute(() -> {
+            zadanieDao.insert(zadanie);
+            Log.d("Repozytorium", "Zadanie zapisane.");
+        });
+    }
+
+    public LiveData<Zadanie> pobierzZadaniePoIdZadania(int id) {
+        return zadanieDao.pobierzZadaniePoId(id);
     }
     public void zmienKategorieZadania(int zadanieId, int nowaKategoriaId) {
         executor.execute(() -> {
-            Zadanie zadanie = zadanieDao.pobierzZadaniePoId(zadanieId);
+            Zadanie zadanie = zadanieDao.pobierzZadaniePoId(zadanieId).getValue();
             if (zadanie != null) {
                 zadanie.setIdKategorii(nowaKategoriaId);
                 zadanieDao.update(zadanie);
             }
         });
     }
+    public void usunZadanie(Zadanie zadanie) {
+        executor.execute(() -> zadanieDao.delete(zadanie));
+    }
+    public void edytujZadanie(Zadanie zadanie) {
+        executor.execute(() -> zadanieDao.update(zadanie));
+    }
 
 
     public LiveData<List<Zadanie>> pobierzZadaniaDlaKategorii(int kategoriaId) {
+        Log.d("Repozytorium", "Pobieram zadania dla id: " + kategoriaId);
         return zadanieDao.pobierzZadaniaDlaKategorii(kategoriaId);
     }
 
     public void insertKomentarz(Komentarz komentarz) {
         executor.execute(() -> komentarzDao.insert(komentarz));
+    }
+    public void usunKomentarz(Komentarz komentarz) {
+        executor.execute(() -> komentarzDao.delete(komentarz));
     }
 
     public LiveData<List<Komentarz>> pobierzKomentarzeDlaZadania(int zadanieId) {

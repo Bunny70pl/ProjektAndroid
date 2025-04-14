@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
     onDelete = ForeignKey.CASCADE)
 )
 public class Zadanie {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
 
     public String tytul;

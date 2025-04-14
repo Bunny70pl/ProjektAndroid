@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,11 @@ public class ZadanieAdapterPodListe extends RecyclerView.Adapter<ZadanieAdapterP
         Zadanie zadanie = zadania.get(position);
         holder.nazwa.setText(zadanie.getTytul());
         holder.opis.setText(zadanie.getOpisZadania());
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onZadanieClick(zadanie);
+            }
+        });
     }
 
     @Override
@@ -34,9 +40,10 @@ public class ZadanieAdapterPodListe extends RecyclerView.Adapter<ZadanieAdapterP
         return zadania.size();
     }
 
-    public void setZadania(List<Zadanie> lista) {
-        this.zadania = lista;
+    public void setZadania(List<Zadanie> zadania) {
+        this.zadania = zadania;
         notifyDataSetChanged();
+        Log.d("Adapter", "Zadania ustawione: " + zadania.size());
     }
 
     public static class ZadaniaViewHolder extends RecyclerView.ViewHolder {
@@ -48,5 +55,12 @@ public class ZadanieAdapterPodListe extends RecyclerView.Adapter<ZadanieAdapterP
             opis = itemView.findViewById(R.id.textViewOpisZadania);
         }
     }
+    public interface OnZadanieClickListener {
+        void onZadanieClick(Zadanie zadanie);
+    }
+    private ZadanieAdapterPodListe.OnZadanieClickListener listener;
 
+    public void setOnZadanieClickListener(ZadanieAdapterPodListe.OnZadanieClickListener listener) {
+        this.listener = listener;
+    }
 }

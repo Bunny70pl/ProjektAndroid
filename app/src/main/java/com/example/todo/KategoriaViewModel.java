@@ -1,12 +1,11 @@
 package com.example.todo;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class KategoriaViewModel extends AndroidViewModel {
@@ -27,9 +26,6 @@ public class KategoriaViewModel extends AndroidViewModel {
     public void pobierzKategoria(int id){
         kategoriaLiveData = repozytorium.pobierzKategoriaPoId(id);
     }
-    public void pobierzZadania(int id){
-        zadania = repozytorium.pobierzZadaniaDlaKategorii(id);
-    }
     public void pobierzProjektPoId(int id) {
         projektLiveData = repozytorium.pobierzProjektPoId(id);
     }
@@ -37,7 +33,11 @@ public class KategoriaViewModel extends AndroidViewModel {
     public LiveData<List<Kategoria>> getKategorie() {
         return kategorie;
     }
-    public LiveData<List<Zadanie>> getZadaniaDlaKategorii() {
+    public void pobierzZadania(int id){
+        zadania = repozytorium.pobierzZadaniaDlaKategorii(id);
+    }
+
+    public LiveData<List<Zadanie>> getZadania() {
         return zadania;
     }
     public LiveData<Projekt> getProjekt() {
@@ -58,6 +58,7 @@ public class KategoriaViewModel extends AndroidViewModel {
     }
 
     public void dodajZadanie(Zadanie zadanie) {
+        Log.d("KategoriaViewModel", "Dodawanie zadania: " + zadanie.getTytul());
         repozytorium.insertZadanie(zadanie);
         pobierzZadania(zadanie.getIdKategorii());
     }

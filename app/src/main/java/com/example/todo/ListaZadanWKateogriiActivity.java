@@ -1,6 +1,7 @@
 package com.example.todo;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ public class ListaZadanWKateogriiActivity extends AppCompatActivity {
     private FloatingActionButton dodajZadanie;
     private FloatingActionButton usunKategorie;
     private FloatingActionButton edytujKateogire;
+    ZadanieAdapterPodListe adapter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,19 @@ public class ListaZadanWKateogriiActivity extends AppCompatActivity {
         kategoriaViewModel = new ViewModelProvider(this).get(KategoriaViewModel.class);
         kategoriaViewModel.pobierzKategoria(kategoriaId);
         kategoriaViewModel.getKategoria().observe(this, kategoria -> {
-            textViewTytul.setText(kategoria.getNazwaKategorii());
+            if (kategoria != null) {
+                textViewTytul.setText(kategoria.getNazwaKategorii());
+            } else {
+                finish();
+            }
         });
-        RecyclerView recyclerView = binding.recyclerViewZadaniaPodKategoria;
-        ZadanieAdapterPodListe adapter = new ZadanieAdapterPodListe();
+        recyclerView = binding.recyclerViewZadaniaPodKategoria;
+        adapter = new ZadanieAdapterPodListe();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         kategoriaViewModel.pobierzZadania(kategoriaId);
-        kategoriaViewModel.getZadaniaDlaKategorii().observe(this, zadania -> {
+        kategoriaViewModel.getZadania().observe(this, zadania -> {
+            Log.d("ListaZadan", "Liczba zadań: " + zadania.size());
             adapter.setZadania(zadania);
         });
         dodajZadanie = binding.dodajZadanie;
@@ -62,15 +70,19 @@ public class ListaZadanWKateogriiActivity extends AppCompatActivity {
                     pokazDialogDodawniaZadania();
                 }
         );
-        /*usunKategorie.setOnClickListener(v->{
+        usunKategorie.setOnClickListener(v->{
                 usunKategoriaMetoda();
                 }
         );
         edytujKateogire.setOnClickListener(v->{
                     pokazDialogEdytowaniaKategoria();
                 }
-        );*/
-
+        );
+        adapter.setOnZadanieClickListener(zadanie -> {
+            Intent intent = new Intent(ListaZadanWKateogriiActivity.this, ZadanieActivity.class);
+            intent.putExtra("zadanieId", zadanie.getId());
+            startActivity(intent);
+        });
     }
     private void pokazDialogDodawniaZadania() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dodaj_zadanie, null);
@@ -83,36 +95,34 @@ public class ListaZadanWKateogriiActivity extends AppCompatActivity {
                 .setPositiveButton("Dodaj", (dialog, which) -> {
                     String nazwa = editNazwa.getText().toString();
                     String opis = editOpis.getText().toString();
-                    Log.d("DEBUG", "Nazwa: " + nazwa + ", Opis: " + opis + ", kategoriaId: " + kategoriaId);
 
                     if (!nazwa.isEmpty() && kategoriaId != -1) {
+                        Log.d("DEBUG", "Dodawanie zadania: " + nazwa + ", " + opis);
                         kategoriaViewModel.dodajZadanie(new Zadanie(nazwa, opis, kategoriaId));
-                    } else {
-                        Log.e("DEBUG", "Nie można dodać zadania: brak nazwy lub nieprawidłowy kategoriaId");
                     }
                 })
                 .setNegativeButton("Anuluj", null)
                 .show();
     }
     private void usunKategoriaMetoda() {
-        kategoriaViewModel.usunKategorie(kategoriaViewModel.getKategoria().getValue());
+        Kategoria kategoria = kategoriaViewModel.getKategoria().getValue();
+        if (kategoria != null) {
+            kategoriaViewModel.usunKategorie(kategoria);
+        }
     }
     private void pokazDialogEdytowaniaKategoria() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edyt_projekt, null);
-        Projekt projekt = kategoriaViewModel.getProjekt().getValue();
-        EditText editNazwa = dialogView.findViewById(R.id.editNazwaProjektu);
-        EditText editOpis = dialogView.findViewById(R.id.editOpisProjektu);
-        editNazwa.setText(projekt.getNazwa());
-        editOpis.setText(projekt.getOpis());
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dodaj_kategorie, null);
+        Kategoria kategoriaDoEdycji = kategoriaViewModel.getKategoria().getValue();
+        EditText editNazwa = dialogView.findViewById(R.id.editNazwaKategorii);
+        editNazwa.setText(kategoriaDoEdycji.getNazwaKategorii());
         new AlertDialog.Builder(this)
-                .setTitle("Edytuj projekt")
+                .setTitle("Edytuj Kategorie")
                 .setView(dialogView)
                 .setPositiveButton("Dodaj", (dialog, which) -> {
                     String nazwa = editNazwa.getText().toString();
                     if (!nazwa.isEmpty()) {
-                        projekt.setNazwa(editNazwa.getText().toString());
-                        projekt.setOpis(editOpis.getText().toString());
-                        kategoriaViewModel.edytujProjekt(projekt);
+                        kategoriaDoEdycji.setNazwaKategorii(editNazwa.getText().toString());
+                        kategoriaViewModel.edytujKategorie(kategoriaDoEdycji);
                     }
                 })
                 .setNegativeButton("Anuluj", null)

@@ -73,7 +73,7 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
             }
         });
         viewModel.pobierzZadania(kategoria.getId());
-        viewModel.getZadaniaDlaKategorii().observe(lifecycleOwner, zadania -> {
+        viewModel.getZadania().observe(lifecycleOwner, zadania -> {
             if (zadania.size() > 0 && zadania.get(0).getIdKategorii() == kategoria.getId()) {
                 adapter.setZadania(zadania);
             }else{

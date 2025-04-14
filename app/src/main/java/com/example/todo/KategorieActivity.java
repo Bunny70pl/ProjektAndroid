@@ -3,6 +3,7 @@ package com.example.todo;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -42,12 +43,17 @@ public class KategorieActivity extends AppCompatActivity {
         kategoriaViewModel = new ViewModelProvider(this).get(KategoriaViewModel.class);
         kategoriaViewModel.pobierzProjektPoId(projektId);
         kategoriaViewModel.getProjekt().observe(this, projekt -> {
-            textViewTytul.setText(projekt.getNazwa());
-            textViewOpis.setText(projekt.getOpis());
+            if (projekt != null) {
+                textViewTytul.setText(projekt.getNazwa());
+                textViewOpis.setText(projekt.getOpis());
+            } else {
+                finish();
+            }
         });
         recyclerViewKategorie = binding.recyclerViewKategorie;
         adapter = new KategoriaAdapter(this,this,this);
         kategoriaViewModel.pobierzKategorie(projektId);
+
         recyclerViewKategorie.setAdapter(adapter);
         recyclerViewKategorie.setLayoutManager(new LinearLayoutManager(this));
         kategoriaViewModel.getKategorie().observe(this, kategorie -> {
@@ -91,7 +97,11 @@ public class KategorieActivity extends AppCompatActivity {
                 .show();
     }
     private void usunProjekt() {
-        kategoriaViewModel.usunProjekt(kategoriaViewModel.getProjekt().getValue());
+        Projekt projekt = kategoriaViewModel.getProjekt().getValue();
+        if (projekt != null && projekt.getId() != 0) {
+            kategoriaViewModel.usunProjekt(projekt);
+            finish();
+        }
     }
     private void pokazDialogEdytowaniaProjektu() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edyt_projekt, null);
