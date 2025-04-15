@@ -91,7 +91,7 @@ public class ZadanieActivity extends AppCompatActivity {
         EditText editKomentarz = dialogView.findViewById(R.id.editKomentarz);
 
         new AlertDialog.Builder(this)
-                .setTitle("Nowe zadanie")
+                .setTitle("Nowy Komentarz")
                 .setView(dialogView)
                 .setPositiveButton("Dodaj", (dialog, which) -> {
                     String komentarzString = editKomentarz.getText().toString();
@@ -124,7 +124,7 @@ public class ZadanieActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Edytuj Zadanie")
                 .setView(dialogView)
-                .setPositiveButton("Dodaj", (dialog, which) -> {
+                .setPositiveButton("Edytuj", (dialog, which) -> {
                     String nazwa = editNazwa.getText().toString();
                     String opis = editOpis.getText().toString();
                     if (!nazwa.isEmpty()) {

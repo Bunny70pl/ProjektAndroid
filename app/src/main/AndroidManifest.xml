@@ -22,7 +22,7 @@
             android:name=".KategorieActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ProjektActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

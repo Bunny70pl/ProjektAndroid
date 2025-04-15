@@ -11,6 +11,7 @@
         android:text="Nazwa Kategorii"
         android:textSize="18sp"
         android:padding="16dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,5 +23,6 @@
         app:layout_constraintTop_toBottomOf="@id/textNazwaKategorii"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:longClickable="true"
         android:layout_marginTop="8dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
     private final Context context;
     private final LifecycleOwner lifecycleOwner;
     private final ViewModelStoreOwner viewModelStoreOwner;
-    KategoriaViewModel kategoriaViewModel;
 
     public KategoriaAdapter(Context context, LifecycleOwner lifecycleOwner, ViewModelStoreOwner viewModelStoreOwner) {
         this.context = context;
@@ -48,7 +48,7 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
     @Override
     public void onBindViewHolder(@NonNull KategoriaAdapter.KategoriaViewHolder holder, int position) {
         Kategoria kategoria = kategorie.get(position);
-        KategoriaViewModel viewModel = new ViewModelProvider(viewModelStoreOwner).get(KategoriaViewModel.class);
+        KategoriaViewModel kategoriaViewModel = new ViewModelProvider(viewModelStoreOwner).get(KategoriaViewModel.class);
         holder.nazwa.setText(kategoria.getNazwaKategorii());
         ZadanieAdapterPodKategorie adapter = new ZadanieAdapterPodKategorie();
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -61,7 +61,16 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
                     ClipData.Item item = event.getClipData().getItemAt(0);
                     int zadanieId = Integer.parseInt(item.getText().toString());
                     int nowaKategoriaId = kategoria.getId();
-                    viewModel.przeniesZadanieDoKategorii(zadanieId, nowaKategoriaId);
+                    kategoriaViewModel.przeniesZadanieDoKategorii(zadanieId, nowaKategoriaId);
+                    return true;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    v.setBackgroundColor(Color.argb(128, 169, 169, 169));
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    v.setBackgroundColor(Color.TRANSPARENT);
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    v.setBackgroundColor(Color.TRANSPARENT);
                     return true;
                 default:
                     return true;
@@ -72,8 +81,8 @@ public class KategoriaAdapter extends RecyclerView.Adapter<KategoriaAdapter.Kate
                 listener.onKategoriaClick(kategoria);
             }
         });
-        viewModel.pobierzZadania(kategoria.getId());
-        viewModel.getZadania().observe(lifecycleOwner, zadania -> {
+        kategoriaViewModel.pobierzZadania(kategoria.getId());
+        kategoriaViewModel.getZadania().observe(lifecycleOwner, zadania -> {
             if (zadania.size() > 0 && zadania.get(0).getIdKategorii() == kategoria.getId()) {
                 adapter.setZadania(zadania);
             }else{

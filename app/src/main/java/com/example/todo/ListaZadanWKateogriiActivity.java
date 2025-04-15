@@ -118,7 +118,7 @@ public class ListaZadanWKateogriiActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Edytuj Kategorie")
                 .setView(dialogView)
-                .setPositiveButton("Dodaj", (dialog, which) -> {
+                .setPositiveButton("Edytuj", (dialog, which) -> {
                     String nazwa = editNazwa.getText().toString();
                     if (!nazwa.isEmpty()) {
                         kategoriaDoEdycji.setNazwaKategorii(editNazwa.getText().toString());

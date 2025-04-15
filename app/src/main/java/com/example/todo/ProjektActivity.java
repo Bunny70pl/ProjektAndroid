@@ -19,7 +19,7 @@
     import com.example.todo.databinding.ActivityMainBinding;
     import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-    public class MainActivity extends AppCompatActivity {
+    public class ProjektActivity extends AppCompatActivity {
         private ActivityMainBinding binding;
         private ProjektViewModel projektViewModel;
         @Override
@@ -52,7 +52,7 @@
                     }
             );
             adapter.setOnProjektClickListener(projekt -> {
-                Intent intent = new Intent(MainActivity.this, KategorieActivity.class);
+                Intent intent = new Intent(ProjektActivity.this, KategorieActivity.class);
                 intent.putExtra("projektId", projekt.getId());
                 startActivity(intent);
             });

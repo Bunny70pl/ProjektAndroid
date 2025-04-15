@@ -85,7 +85,7 @@ public class Repozytorium {
     }
     public void zmienKategorieZadania(int zadanieId, int nowaKategoriaId) {
         executor.execute(() -> {
-            Zadanie zadanie = zadanieDao.pobierzZadaniePoId(zadanieId).getValue();
+            Zadanie zadanie = zadanieDao.pobierzZadaniePoIdv2(zadanieId);
             if (zadanie != null) {
                 zadanie.setIdKategorii(nowaKategoriaId);
                 zadanieDao.update(zadanie);

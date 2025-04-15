@@ -45,11 +45,6 @@ public class ZadanieViewModel extends AndroidViewModel {
         public LiveData<Zadanie> getZadanie() {
             return zadanieLiveData;
         }
-
-        public void getKomentarzePoIdZadania(int id) {
-            wszystkieKomentzarze = repozytorium.pobierzKomentarzeDlaZadania(id);
-        }
-
         public void dodajKomentarz(Komentarz komentarz) {
             repozytorium.insertKomentarz(komentarz);
         }
